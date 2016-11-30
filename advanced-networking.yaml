@@ -4,7 +4,9 @@
 # Many networks are disabled by default because they are not used
 # in a typical configuration. Override via parameter_defaults.
 resource_registry:
-  OS::TripleO::Network::External: /home/stack/templates/network/noop.yaml
+  OS::TripleO::Network::External: /home/stack/templates/network/external.yaml
+
+#  OS::TripleO::Network::External: /home/stack/templates/network/noop.yaml
   OS::TripleO::Network::InternalApi: /home/stack/templates/network/noop.yaml
   OS::TripleO::Network::StorageMgmt: /home/stack/templates/network/noop.yaml
   OS::TripleO::Network::Storage: /home/stack/templates/network/noop.yaml
@@ -13,14 +15,16 @@ resource_registry:
   #OS::TripleO::Network::Management: /home/stack/templates/network/noop.yaml
 
   # Port assignments for the VIPs
-  OS::TripleO::Network::Ports::ExternalVipPort: /home/stack/templates/network/ports/noop.yaml
+  OS::TripleO::Network::Ports::ExternalVipPort: /home/stack/templates/network/ports/external.yaml
+#  OS::TripleO::Network::Ports::ExternalVipPort: /home/stack/templates/network/ports/noop.yaml
   OS::TripleO::Network::Ports::InternalApiVipPort: /home/stack/templates/network/ports/noop.yaml
   OS::TripleO::Network::Ports::StorageVipPort: /home/stack/templates/network/ports/noop.yaml
   OS::TripleO::Network::Ports::StorageMgmtVipPort: /home/stack/templates/network/ports/noop.yaml
   OS::TripleO::Network::Ports::RedisVipPort: /home/stack/templates/network/ports/noop.yaml
 
   # Port assignments for the controller role
-  OS::TripleO::Controller::Ports::ExternalPort: /home/stack/templates/network/ports/noop.yaml
+#  OS::TripleO::Controller::Ports::ExternalPort: /home/stack/templates/network/ports/noop.yaml
+  OS::TripleO::Controller::Ports::ExternalPort: /home/stack/templates/network/ports/external.yaml
   OS::TripleO::Controller::Ports::InternalApiPort: /home/stack/templates/network/ports/noop.yaml
   OS::TripleO::Controller::Ports::StoragePort: /home/stack/templates/network/ports/noop.yaml
   OS::TripleO::Controller::Ports::StorageMgmtPort: /home/stack/templates/network/ports/noop.yaml
@@ -59,8 +63,20 @@ resource_registry:
   OS::TripleO::SwiftStorage::Net::SoftwareConfig: /home/stack/templates/nic-configs/swift-storage.yaml
 
 parameter_defaults:
+  
+  ExternalNetCidr: 192.168.122.0/24
+  ExternalAllocationPools: [{'start': '192.168.122.100', 'end': '192.168.122.199'}]
+  ExternalInterfaceDefaultRoute: 192.168.122.1
   # Add in configuration for the Control Plane
   ControlPlaneSubnetCidr: "24"
   ControlPlaneDefaultRoute: 172.16.0.1
   EC2MetadataIp: 172.16.0.1
   DnsServers: ['192.168.122.1', '8.8.8.8']
+
+
+  # This sets 'external_network_bridge' in l3_agent.ini to an empty string
+  # so that external networks act like provider bridge networks (they
+  # will plug into br-int instead of br-ex)
+  NeutronExternalNetworkBridge: "''"
+
+

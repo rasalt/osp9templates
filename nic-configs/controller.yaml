@@ -106,6 +106,29 @@ resources:
                   ip_netmask: 169.254.169.254/32
                   next_hop: {get_param: EC2MetadataIp}
 
+            -
+              type: ovs_bridge
+              # This will default to br-ex, anything else requires specific
+              # brige mapping entries for it to be used.
+              name: {get_input: bridge_name}
+              # this defroute = true helps the instances on br-ex to route externally ELSE no routing and no PING
+              defroute: true
+              dns_servers: {get_param: DnsServers}
+              use_dhcp: false
+              addresses:
+                -
+                  ip_netmask: {get_param: ExternalIpSubnet}
+              routes:
+                -
+                  ip_netmask: 0.0.0.0/0
+                  next_hop: {get_param: ExternalInterfaceDefaultRoute}
+              members:
+                -
+                  type: interface
+                  name: nic2
+                  # force the MAC address of the bridge to this interface
+                  primary: true
+
 
 outputs:
   OS::stack_id:
