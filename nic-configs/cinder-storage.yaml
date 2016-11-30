@@ -1,0 +1,34 @@
+resources:
+  OsNetConfigImpl:
+    type: OS::Heat::StructuredConfig
+    properties:
+      group: os-apply-config
+      config:
+        os_net_config:
+          network_config:
+          -
+              type: interface
+              name: nic1
+              use_dhcp: false
+              dns_servers: {get_param: DnsServers}
+              addresses:
+                -
+                  ip_netmask:
+                    list_join:
+                      - '/'
+                      - - {get_param: ControlPlaneIp}
+                        - {get_param: ControlPlaneSubnetCidr}
+              routes:
+                -
+                  ip_netmask: 0.0.0.0/0
+                  next_hop: {get_param: ControlPlaneDefaultRoute}
+                  # Optionally have this interface as default route
+                  default: true
+                -
+                  ip_netmask: 169.254.169.254/32
+                  next_hop: {get_param: EC2MetadataIp}
+
+outputs:
+  OS::stack_id:
+    description: The OsNetConfigImpl resource.
+    value: {get_resource: OsNetConfigImpl}
