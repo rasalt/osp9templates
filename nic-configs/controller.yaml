@@ -3,6 +3,7 @@ heat_template_version: 2015-04-30
 description: >
   Software Config to drive os-net-config to configure multiple interfaces
   for the controller role.
+
 parameters:
   ControlPlaneIp:
     default: ''
@@ -99,8 +100,7 @@ resources:
                 -
                   ip_netmask: 169.254.169.254/32
                   next_hop: {get_param: EC2MetadataIp}
-
-            -
+                -
               type: ovs_bridge
               # This will default to br-ex, anything else requires specific
               # brige mapping entries for it to be used.
@@ -122,7 +122,21 @@ resources:
                   name: nic2
                   # force the MAC address of the bridge to this interface
                   primary: true
-
+            -
+              type: interface
+              name: nic3
+              use_dhcp: false
+              defroute: false
+            -
+              type: interface
+              name: nic4
+              use_dhcp: false
+              defroute: false
+            -
+              type: interface
+              name: nic5
+              use_dhcp: false
+              defroute: false
 
 outputs:
   OS::stack_id:

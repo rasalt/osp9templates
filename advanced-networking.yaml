@@ -65,19 +65,18 @@ resource_registry:
 
 parameter_defaults:
   
-  ExternalNetCidr: 192.168.122.0/24
-  ExternalAllocationPools: [{'start': '192.168.122.100', 'end': '192.168.122.199'}]
-  ExternalInterfaceDefaultRoute: 192.168.122.1
+  ExternalNetCidr: 10.0.0.0/24
+  ExternalAllocationPools: [{'start': '10.0.0.100', 'end': '10.0.0.199'}]
+  ExternalInterfaceDefaultRoute: 10.0.0.1
   # Add in configuration for the Control Plane
   ControlPlaneSubnetCidr: "24"
   ControlPlaneDefaultRoute: 172.16.0.1
   EC2MetadataIp: 172.16.0.1
-  DnsServers: ['192.168.122.1', '8.8.8.8']
+  DnsServers: ['8.8.8.8']
 
 
   # This sets 'external_network_bridge' in l3_agent.ini to an empty string
   # so that external networks act like provider bridge networks (they
   # will plug into br-int instead of br-ex)
   NeutronExternalNetworkBridge: "''"
-
 
